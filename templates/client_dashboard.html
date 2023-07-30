@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Client Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="dashboard-banner">
+        <h1 class="dashboard-title">Selva</h1>
+        <div class="dashboard-line"></div>
+    </div>
+    
+    <!-- Add a logout button -->
+    <div class="logout-container">
+        <form action="{{ url_for('logout') }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+
+    <h2 class="medium-header">{{ current_user.first_name }}'s Dashboard</h2>
+
+    <!-- Add New Entry Section -->
+    <div class="add-entry-section">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+    
+        <h3>Add New Entry</h3>
+        <form class="add-entry-form" method="POST" action="{{ url_for('client_dashboard') }}">
+            <!-- Use a hidden input field for the CSRF token -->
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <label for="entry-header" class="input-label">Header:</label>
+            <input type="text" id="entry-header" name="header" placeholder="Enter header (optional)">
+    
+            <label for="entry-content" class="input-label">Content:</label>
+            <textarea id="entry-content" name="content" placeholder="Enter content" required spellcheck="false"></textarea>
+            
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+        
+    <!-- Table to display past entries -->
+    <h3 class="past-entries-header">Past Entries</h3>
+    <table>
+        <thead>
+            <tr>
+                <th class="input-label">#</th>
+                <th class="input-label date-column">Date</th>
+                <th class="input-label">Header</th>
+                <th class="input-label">Preview</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if entries %}
+                {% for entry in entries %}
+                    <tr>
+                        <td>{{ entries|length - loop.index + 1 }}</td>
+                        <td class="date-column">{{ entry.timestamp.strftime('%m/%d/%Y') }}</td>
+                        <td>{{ entry.header }}</td>
+                        <td>{{ entry.content }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4" class="empty-message">No entries yet.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    
+    <script>
+        function adjustTextAreaHeight(element) {
+          element.style.height = "auto";
+          element.style.height = element.scrollHeight + "px";
+        }
+      
+        // Attach the event listener to the textarea
+        const textarea = document.querySelector(".add-entry-form textarea");
+        textarea.addEventListener("input", function () {
+          adjustTextAreaHeight(this);
+        });
+      
+        // Initially adjust the height of the textarea
+        adjustTextAreaHeight(textarea);
+    </script>
+</body>
+</html>

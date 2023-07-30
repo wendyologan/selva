@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Selva - Register as Therapist</title>
+    <link rel="stylesheet" type="text/css" href="../static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Selva</h1>
+        <div class="line"></div>
+        <h2 class="medium-header">Register as Therapist</h2>
+        <div class="therapist-form">
+            <form action="{{ url_for('register_therapist') }}" method="POST" onsubmit="return validateForm()">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="role" value="therapist"> 
+                <div class="input-container">
+                    <div class="input-row">
+                        <div class="input-column">
+                            <div class="input-field">
+                                <input type="text" id="first_name" name="first_name" placeholder="First Name" required>
+                            </div>
+                            <div class="input-field">
+                                <input type="text" id="last_name" name="last_name" placeholder="Last Name" required>
+                            </div>
+                            <div class="input-field">
+                                <input type="text" id="username" name="username" placeholder="Username" autocomplete="username" required>
+                            </div>
+                            <!-- Display validation error for 'username' field -->
+                            {% if errors.username %}
+                            <div class="error-message">{{ errors.username }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-column">
+                            <div class="input-field">
+                                <input type="password" id="password" name="password" placeholder="Password" autocomplete="new-password" required>
+                            </div>
+                            <!-- Display validation error for 'password' field -->
+                            <div class="error-column">
+                                {% if errors.password %}
+                                <div class="error-message">{{ errors.password }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-column">
+                            <div class="input-field">
+                                <input type="password" id="confirm-password" name="confirm_password" placeholder="Confirm Password" autocomplete="new-password" required>
+                            </div>
+                            <!-- Display validation error for 'confirm_password' field -->
+                            <div class="error-column">
+                                {% if errors.confirm_password %}
+                                <div class="error-message">{{ errors.confirm_password }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button class="register-button" type="submit">Register</button>
+                </div>
+            </form>
+        </div>
+        <br>
+        <div class="line"></div>
+        <br>
+        <div class="back-button">
+            <a href="/" class="back-link">Back to Sign-in</a>
+        </div>
+    </div>
+</body>
+</html>

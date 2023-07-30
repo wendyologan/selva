@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Selva - Sign in</title>
+    <link rel="stylesheet" type="text/css" href="../static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Selva</h1>
+        <div class="line"></div>
+        <h2 class="medium-header">Sign in</h2>
+        {% if error %}
+            <div class="input-field has-error">
+                <div class="error-message">{{ error }}</div>
+            </div>
+        {% endif %}
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+        <form action="{{ url_for('login') }}" method="POST">
+            <!-- Include the CSRF token field -->
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="input-field">
+                <input type="text" id="signin-username" name="username" autocomplete="username" placeholder="Username" required>
+                <div class="error-message" id="signin-username-error">{{ errors.get('username', '') }}</div>
+            </div>
+            <div class="input-field">
+                <input type="password" id="signin-password" name="password" autocomplete="current-password" placeholder="Password" required>
+                <div class="error-message" id="signin-password-error">{{ errors.get('password', '') }}</div>
+            </div>
+            <div class="button-container">
+                <button class="login-button" type="submit">Sign in</button>
+            </div>
+        </form>
+        <br>
+        <div class="line"></div>
+        <p class="register-text">If this is your first time here, click below to register:</p>
+        <a href="{{ url_for('register_client') }}" class="registration-button">Register as Client</a>
+        <br>
+        <a href="{{ url_for('register_therapist') }}" class="registration-button therapist-form">Register as Therapist</a>
+    </div>
+</body>
+</html>

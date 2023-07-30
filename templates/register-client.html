@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Selva - Register as Patient</title>
+    <link rel="stylesheet" type="text/css" href="../static/styles.css">
+    <script>
+      // Function to show error message
+      function showError(inputField, errorMessage) {
+        var inputContainer = inputField.parentElement;
+        var errorContainer = inputContainer.querySelector('.error-column');
+        errorContainer.innerHTML = errorMessage;
+        errorContainer.style.display = 'block';
+        inputContainer.classList.add('has-error'); // Add the has-error class to the input field container
+      }
+    
+      // Function to hide error message
+      function hideError(inputField) {
+        var inputContainer = inputField.parentElement;
+        var errorContainer = inputContainer.querySelector('.error-column');
+        errorContainer.innerHTML = '';
+        errorContainer.style.display = 'none';
+        inputContainer.classList.remove('has-error'); // Remove the has-error class from the input field container
+      }
+    
+      // Function to validate the form
+      function validateForm() {
+        var usernameField = document.getElementById('username');
+        var passwordField = document.getElementById('password');
+        var confirmPasswordField = document.getElementById('confirm-password');
+    
+        var username = usernameField.value;
+        var password = passwordField.value;
+        var confirmPassword = confirmPasswordField.value;
+    
+        var errors = {};
+    
+        // Perform validation checks
+        if (!username) {
+          errors.username = 'Username is required.';
+          showError(usernameField, errors.username);
+        } else {
+          hideError(usernameField);
+        }
+    
+        if (!password) {
+          errors.password = 'Password is required.';
+          showError(passwordField, errors.password);
+        } else if (password.length < 6) {
+          errors.password = 'Password must be at least 6 characters long.';
+          showError(passwordField, errors.password);
+        } else {
+          hideError(passwordField);
+        }
+    
+        if (!confirmPassword) {
+          errors.confirm_password = 'Confirm Password is required.';
+          showError(confirmPasswordField, errors.confirm_password);
+        } else if (password !== confirmPassword) {
+          errors.confirm_password = 'Passwords do not match.';
+          showError(confirmPasswordField, errors.confirm_password);
+        } else {
+          hideError(confirmPasswordField);
+        }
+    
+        // If there are errors, prevent form submission
+        if (Object.keys(errors).length > 0) {
+          return false;
+        }
+      }
+    </script>    
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">Selva</h1>
+    <div class="line"></div>
+    <h2 class="medium-header">Register as Client</h2>
+    <form action="{{ url_for('register_client') }}" method="POST" onsubmit="return validateForm()">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="role" value="client"> <!-- Set role to 'client' for client registration -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+      <div class="input-container">
+        <div class="input-row">
+          <div class="input-column">
+            <div class="input-field">
+              <input type="text" id="first_name" name="first_name" placeholder="First Name" required>
+            </div>
+            <!-- Display validation error for 'first_name' field -->
+            <div class="error-column">
+              {% if errors.first_name %}
+                <div class="error-message">{{ errors.first_name }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-column">
+            <div class="input-field">
+              <input type="text" id="last_name" name="last_name" placeholder="Last Name" required>
+            </div>
+            <!-- Display validation error for 'last_name' field -->
+            <div class="error-column">
+              {% if errors.last_name %}
+                <div class="error-message">{{ errors.last_name }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>   
+        <div class="input-row">
+          <div class="input-column">
+            <div class="input-field">
+              <input type="text" id="username" name="username" placeholder="Username" autocomplete="username" required>
+            </div>
+            <!-- Display validation error for 'username' field -->
+            {% if errors.username %}
+              <div class="error-message">{{ errors.username }}</div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-column">
+            <div class="input-field">
+              <input type="password" id="password" name="password" placeholder="Password" autocomplete="new-password" required>
+            </div>
+            <!-- Display validation error for 'password' field -->
+            <div class="error-column">
+              {% if errors.password %}
+                <div class="error-message">{{ errors.password }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-column">
+            <div class="input-field">
+              <input type="password" id="confirm-password" name="confirm_password" placeholder="Confirm Password" autocomplete="new-password" required>
+            </div>
+            <!-- Display validation error for 'confirm_password' field -->
+            <div class="error-column">
+              {% if errors.confirm_password %}
+                <div class="error-message">{{ errors.confirm_password }}</div>
+              {% endif %}
+            </div>
+            <div class="input-field">
+              <select id="therapist" name="therapist" class="select-field">
+                <option value="" selected disabled>Select a therapist</option>
+                {% for therapist_id, therapist_name in form.therapist.choices %}
+                  <option value="{{ therapist_id }}">{{ therapist_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="error-column">
+              {% if errors.therapist %}
+                <div class="error-message">{{ errors.therapist }}</div>
+              {% endif %}    
+          </div>
+        </div>
+      </div>
+      <div class="button-container">
+        <button class="register-button" type="submit">Register</button>
+      </div>
+    </form>
+    <br>
+    <div class="line"></div>
+    <br>
+    <div class="back-button">
+      <a href="/" class="back-link">Back to Sign-in</a>
+    </div>
+  </div>  
+</body>
+</html>
