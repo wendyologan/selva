@@ -76,7 +76,8 @@
     <h2 class="medium-header">Register as Client</h2>
     <form action="{{ url_for('register_client') }}" method="POST" onsubmit="return validateForm()">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <input type="hidden" name="role" value="client"> <!-- Set role to 'client' for client registration -->
+      <!-- Set role to 'client' for client registration -->
+      <input type="hidden" name="role" value="client"> 
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% for category, message in messages %}
           <div class="alert alert-{{ category }}">{{ message }}</div>
