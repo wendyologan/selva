@@ -9,7 +9,7 @@ Getting Started
 Installation
 1. Clone the repository: 
 git clone https://github.com/wendyologan/selva.git
-cd your_project
+cd selva
 
 2. Activate the 'selvavenv' virtual environment:
 source selvavenv/bin/activate
