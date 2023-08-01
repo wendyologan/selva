@@ -1,19 +1,19 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, session, jsonify
-from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, validators, SubmitField, HiddenField, SelectField
 from wtforms.validators import InputRequired, Length, EqualTo, ValidationError, DataRequired
 
-from sqlalchemy import Column, Integer, String, ForeignKey, desc
+from sqlalchemy import Column, Integer, ForeignKey, desc
 from sqlalchemy.orm import relationship
 
 import os
 from flask_migrate import Migrate
 from datetime import datetime
 
-from werkzeug.security import generate_password_hash, check_password_hash  # Add these lines
+from werkzeug.security import generate_password_hash, check_password_hash
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
 instance_path = os.path.join(base_dir, 'instance')
@@ -46,7 +46,6 @@ def handle_csrf_error(e):
     flash('The CSRF token has expired. Please try again.', 'danger')
     return redirect(url_for('client_dashboard'))
 
-# Define roles
 THERAPIST_ROLE = 'therapist'
 PATIENT_ROLE = 'patient'
 
@@ -97,7 +96,7 @@ class DiaryEntry(db.Model):
     content = db.Column(db.Text, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patients.id'))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    entry_date = db.Column(db.Date, nullable=False, default=datetime.utcnow)  # New entry_date attribute
+    entry_date = db.Column(db.Date, nullable=False, default=datetime.utcnow)  
     patient = db.relationship("Patient", back_populates="entries")
 
     def __init__(self, header, content, patient_id):
@@ -116,7 +115,6 @@ class Therapist(User):
     }
 
     def __init__(self, first_name, last_name, username, password, role=THERAPIST_ROLE):
-        # Call the super class's __init__ to set common attributes
         super().__init__(first_name, last_name, username, password, role=role)
 
     def is_authenticated(self):
@@ -151,7 +149,7 @@ class Patient(User):
 
     __mapper_args__ = {
         'polymorphic_identity': 'patient',
-        'inherit_condition': (id == User.id)  # Specify the inherit condition here
+        'inherit_condition': (id == User.id) 
     }
 
     def __init__(self, therapist=None, **kwargs):
@@ -185,7 +183,7 @@ class SigninForm(FlaskForm):
     submit = SubmitField('Sign In')
 
     def validate_username(form, field):
-        allowed_roles = ['therapist', 'Therapist']  # Add any other allowed roles here
+        allowed_roles = ['therapist', 'Therapist'] 
         if field.data not in allowed_roles:
             raise ValidationError('Invalid role. Please choose "therapist".')
 
@@ -211,22 +209,16 @@ def signin():
     version = 1 
 
     if form.validate_on_submit():
-        # Process the form data here (e.g., check if the username and password are valid)
         username = form.username.data
         password = form.password.data
-        # Check if the user exists in the database and the password is correct
         user = User.query.filter_by(username=username).first()
         if user and user.check_password(password):
-            # Login the user using Flask-Login's login_user() function
             login_user(user)
-
-            # Redirect the user to the appropriate dashboard based on their role
             if user.role == 'therapist':
                 return redirect(url_for('therapist_dashboard'))
             elif user.role == 'patient':
                 return redirect(url_for('client_dashboard'))
         else:
-            # Failed authentication, display an error message
             flash('Invalid username or password. Please try again.', 'error')
     
     form_errors = form.errors
@@ -236,14 +228,12 @@ def signin():
 @app.route('/register_therapist', methods=['GET', 'POST'])
 def register_therapist():
     if request.method == 'POST':
-        # Retrieve the form data submitted by the user
         first_name = request.form['first_name']
         last_name = request.form['last_name']
         username = request.form['username']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
 
-        # Add validation logic here to check form data
         errors = {}
         if len(username) < 4:
             errors['username'] = 'Username must be at least 4 characters long.'
@@ -254,11 +244,11 @@ def register_therapist():
         if password != confirm_password:
             errors['confirm_password'] = 'Passwords do not match.'
 
-        # If there are validation errors, render the template with the errors
+        # If validation errors, render template with errors
         if errors:
             return render_template('register-therapist.html', errors=errors)
 
-        # If the form data is valid, create a new therapist instance and save it to the database
+        # If form data is valid, create a new therapist instance and save it to the database
         new_therapist = Therapist(
             first_name=first_name,
             last_name=last_name,
@@ -271,10 +261,10 @@ def register_therapist():
 
         flash('Registration successful, welcome to your account!', 'success')
 
-        # Redirect the user to the login page after successful registration
+        # Redirect user to login page after successful registration
         return redirect(url_for('login'))
 
-    # If the request method is GET, render the therapist registration form template
+    # If request method is GET, render the therapist registration form template
     return render_template('register-therapist.html', errors={})
 
 @app.route('/register-client', methods=['GET', 'POST'])
@@ -285,15 +275,16 @@ def register_client():
 
     form = ClientRegistrationForm()
     form.therapist.choices = [(therapist.id, therapist.full_name) for therapist in therapists]
-
-    errors = {}  # Dictionary to store validation errors
+    
+    # Dictionary to store validation errors
+    errors = {}
 
     if form.validate_on_submit():
         first_name = form.first_name.data
         last_name = form.last_name.data
         username = form.username.data
         password = form.password.data
-        therapist_id = form.therapist.data  # Assuming you have a field named 'therapist' in the form
+        therapist_id = form.therapist.data 
 
         if User.query.filter_by(username=username).first():
             flash('Username already exists. Please choose a different username.', 'error')
@@ -315,7 +306,6 @@ def register_client():
         flash('Registration successful, please sign in to access your account!', 'success')
         return redirect(url_for('login'))
 
-    # If there are no errors, `errors` will be an empty dictionary
     # Pass the `errors` dictionary to the template, even if it's empty
     return render_template('register-client.html', therapists=therapists, errors=errors, form=form)
 
@@ -337,7 +327,6 @@ def get_diary_entries():
             'client_name': entry.patient.full_name,
             'header': entry.header
         })
-
     return jsonify(diary_entries)
 
 def get_all_therapists():
@@ -347,25 +336,21 @@ def get_all_therapists():
     except Exception as e:
         return []
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
-        # Check if the user is a therapist
         therapist = Therapist.query.filter_by(username=username).first()
 
         if therapist and therapist.check_password(password):
             # Successful login for a therapist
-            # Set the therapist's ID and role in the session
             session['user_type'] = 'therapist'
             session['user_id'] = therapist.id
             login_user(therapist)
             return redirect(url_for('therapist_dashboard'))
         else:
-            # Perform the same login process for clients as before
             user = User.query.filter_by(username=username).first()
             if user and user.check_password(password):
                 # Successful login
@@ -387,7 +372,7 @@ def therapist_dashboard():
     therapist_id = current_user.get_id()
     patients = Patient.query.filter(Patient.therapist_id == therapist_id).all()
 
-    # Check if the user is a therapist based on the session variable
+    # Check if the user is a therapist based on role
     if current_user.role == 'therapist':
         entries = DiaryEntry.query \
             .join(Patient, DiaryEntry.patient_id == Patient.id) \
@@ -396,7 +381,6 @@ def therapist_dashboard():
             .all()
         return render_template('therapist_dashboard.html', patients=patients, entries=entries)
 
-    # Redirect to the main page if the user is not a therapist or not authenticated
     flash('Please log in as a therapist to access this page.', 'danger')
     return redirect(url_for('main'))
 
@@ -436,7 +420,7 @@ def client_dashboard():
         return redirect(url_for('client_dashboard'))
 
     try:
-        # Query the database to retrieve the past entries for the client, ordered by timestamp (most recent first)
+        # Query database to retrieve past entries for the client, ordered by timestamp (most recent first)
         entries = DiaryEntry.query.filter_by(patient_id=client_id).order_by(DiaryEntry.timestamp.desc()).all()
     except Exception as e:
         entries = []
@@ -444,6 +428,14 @@ def client_dashboard():
         flash('Failed to fetch diary entries. Please try again later.', 'danger')
 
     return render_template('client_dashboard.html', entries=entries)
+
+app.route('diary_entry/<int:entry_id>')
+def diary_entry(entry_id):
+    entry = DiaryEntry.query.get(entry_id)
+    if not entry:
+        flash('Diary entry not found.', 'danger')
+        return redirect(url_for('therapist_dashboard'))
+    return render_template('diary_entry.html', entry=entry)
 
 
 @app.route('/logout', methods=['GET', 'POST'])

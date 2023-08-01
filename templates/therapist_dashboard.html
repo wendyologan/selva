@@ -60,7 +60,7 @@
                             <td>{{ loop.index }}</td> 
                             <td class="date-column">{{ entry.date }}</td>
                             <td>{{ entry.client_name }}</td>
-                            <td>{{ entry.header }}</td>
+                            <td><a href="{{ url_for('diary_entry', entry_id=entry.id) }}">{{ entry.header }}</a></td>
                         </tr>
                     {% endfor %}
                 {% else %}

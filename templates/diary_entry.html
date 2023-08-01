@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diary Entry</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>{{ entry.header }}</h1>
+    <p>Date: {{ entry.date }}</p>
+    <p>Client Name: {{ entry.client_name }}</p>
+    <hr>
+    <p>{{ entry.content }}</p>
+</body>
+</html>
