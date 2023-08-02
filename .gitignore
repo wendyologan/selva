@@ -1,12 +1,3 @@
-__pycache__/app.cpython-310.pyc
-__pycache__/app.cpython-311.pyc
-instance/entries.db
-migrations/alembic.ini
-migrations/env.py
-migrations/README
-migrations/script.py.mako
-migrations/__pycache__/env.cpython-311.pyc
-migrations/versions/95349d3b7627_init.py
-migrations/versions/__pycache__/95349d3b7627_init.cpython-311.pyc
-templates/therapist_dashboard.html
-__pycache__/app.cpython-311.pyc
+__pycache__/
+instance/
+migrations/
