@@ -189,7 +189,7 @@ class SigninForm(FlaskForm):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.get_by_id(user_id)
+    return db.session.query(User).get(int(user_id))
 
 @app.route('/')
 def main():
@@ -259,7 +259,7 @@ def register_therapist():
         db.session.add(new_therapist)
         db.session.commit()
 
-        flash('Registration successful, welcome to your account!', 'success')
+        flash('Registration successful, please sign in to access your account!', 'success')
 
         # Redirect user to login page after successful registration
         return redirect(url_for('login'))
@@ -325,8 +325,10 @@ def get_diary_entries():
             'client_id': entry.patient_id,
             'date': entry.entry_date.strftime('%Y-%m-%d'),
             'client_name': entry.patient.full_name,
-            'header': entry.header
+            'header': entry.header,
+            'id': entry.id
         })
+    print("diary_entries:", diary_entries)
     return jsonify(diary_entries)
 
 def get_all_therapists():
@@ -375,6 +377,7 @@ def therapist_dashboard():
     # Check if the user is a therapist based on role
     if current_user.role == 'therapist':
         entries = DiaryEntry.query \
+            .with_entities(DiaryEntry.id, DiaryEntry.entry_date, DiaryEntry.header, Patient) \
             .join(Patient, DiaryEntry.patient_id == Patient.id) \
             .filter(Patient.therapist_id == therapist_id) \
             .order_by(desc(DiaryEntry.timestamp)) \
@@ -429,21 +432,21 @@ def client_dashboard():
 
     return render_template('client_dashboard.html', entries=entries)
 
-app.route('diary_entry/<int:entry_id>')
+@app.route('/diary_entry/<int:entry_id>')
 def diary_entry(entry_id):
     entry = DiaryEntry.query.get(entry_id)
     if not entry:
         flash('Diary entry not found.', 'danger')
         return redirect(url_for('therapist_dashboard'))
-    return render_template('diary_entry.html', entry=entry)
-
+    client_name = entry.patient.full_name
+    return render_template('diary_entry.html', entry=entry, client_name=client_name)
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     # Logout the user using Flask-Login's logout_user() function
     logout_user()
 
-    # Redirect the user back to the main page or any other route after logout
+    # Redirect the user back to the main page
     return redirect(url_for('main'))
 
 def create_database_tables():

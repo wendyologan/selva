@@ -3,12 +3,52 @@
 <head>
     <title>Diary Entry</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .diary-info {
+            text-align: left;
+        }
+
+        p {
+            margin-block-start: .2em;
+            margin-block-end: .2em;
+        }
+        .entry-details {
+            display: flex;
+        }
+
+        .label-column {
+            flex: 0 0 150px;
+            font-weight: bold;
+        }
+        .text-column {
+            flex: 1;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ entry.header }}</h1>
-    <p>Date: {{ entry.date }}</p>
-    <p>Client Name: {{ entry.client_name }}</p>
-    <hr>
-    <p>{{ entry.content }}</p>
+    <h1 class="title">Selva</h1>
+    <div class="line"></div>
+    <a href="{{ url_for('therapist_dashboard') }}">Back to Therapist's Dashboard</a>
+    <br><br>
+    <h2 class="medium-header">Diary Entry #{{ entry.id }}</h2>
+    <div class="diary-info">    
+        <div class="entry-details">
+            <div class="label-column">Date:</div>
+            <div class="text-column">{{ entry.entry_date.strftime('%m/%d/%Y') }}</div>
+        </div>
+    
+        <div class="entry-details">
+            <div class="label-column">Client Name:</div>
+            <div class="text-column">{{ client_name }}</div>
+        </div>
+
+        <div class="entry-details">
+            <div class="label-column">Header:</div>
+            <div class="text-column">{{ entry.header }}</div>
+        </div>
+        <br>
+        <p><strong>Content:</strong></p>
+        <p>{{ entry.content }}</p>
+    </div>
 </body>
 </html>

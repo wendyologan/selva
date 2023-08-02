@@ -35,6 +35,9 @@
             top: 10px;
             right: 10px;
         }
+        .row {
+            cursor: pointer;
+        }
     </style>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </head>
@@ -42,8 +45,10 @@
     <div class="therapist-dashboard">
         <a href="{{ url_for('logout') }}" class="logout-link">Log Out</a>
         <h1 class="title">Selva</h1>
+        <div class="line"></div>
         <h2 class="medium-header">Therapist's Dashboard</h2>
         <h3 class="header">Diary Entries</h3>
+        <br>
         <table>
             <thead>
                 <tr>
@@ -55,20 +60,20 @@
             </thead>
             <tbody>
                 {% if entries %}
-                    {% for entry in entries %}
-                        <tr>
-                            <td>{{ loop.index }}</td> 
-                            <td class="date-column">{{ entry.date }}</td>
-                            <td>{{ entry.client_name }}</td>
-                            <td><a href="{{ url_for('diary_entry', entry_id=entry.id) }}">{{ entry.header }}</a></td>
-                        </tr>
-                    {% endfor %}
-                {% else %}
-                        <tr>
-                        <td colspan="4" class="empty-message">No entries found.</td>
+                  {% for entry in entries %}
+                    <tr class="row" data-entry-id="{{ entry.id }}">
+                      <td>{{ loop.index }}</td> 
+                      <td class="date-column">{{ entry.date }}</td>
+                      <td>{{ entry.client_name }}</td>
+                      <td>{{ entry.header }}</td>
                     </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr>
+                    <td colspan="4" class="empty-message">No entries found.</td>
+                  </tr>
                 {% endif %}
-            </tbody>
+             </tbody>
         </table>
     </div>
 </body>
