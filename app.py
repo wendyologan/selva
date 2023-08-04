@@ -167,6 +167,10 @@ class ClientRegistrationForm(FlaskForm):
     password = PasswordField('Password', [validators.InputRequired(), validators.Length(min=6)])
     confirm_password = PasswordField('Confirm Password', [validators.EqualTo('password', message='Passwords must match')])
     therapist = SelectField('Therapist', validators=[DataRequired()], coerce=int)
+    def validate_therapist(self, therapist):
+        if therapist.data == 'Select a therapist':
+            raise ValidationError('Please select a therapist')
+
     submit = SubmitField('Register')
 
 class TherapistRegistrationForm(FlaskForm):
@@ -305,6 +309,8 @@ def register_client():
 
         flash('Registration successful, please sign in to access your account!', 'success')
         return redirect(url_for('login'))
+    if not form.therapist.data:
+        errors['therapist'] = 'Please select a therapist.'
 
     # Pass the `errors` dictionary to the template, even if it's empty
     return render_template('register-client.html', therapists=therapists, errors=errors, form=form)

@@ -5,11 +5,10 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="dashboard-banner">
+    <div class="banner">
         <h1 class="dashboard-title">Selva</h1>
-        <div class="dashboard-line"></div>
+        <div class="line"></div>
     </div>
-    
     <!-- Add a logout button -->
     <div class="logout-container">
         <form action="{{ url_for('logout') }}" method="POST">
@@ -17,9 +16,7 @@
             <button type="submit">Logout</button>
         </form>
     </div>
-
     <h2 class="medium-header">{{ current_user.first_name }}'s Dashboard</h2>
-
     <!-- Add New Entry Section -->
     <div class="add-entry-section">
         {% with messages = get_flashed_messages(with_categories=true) %}

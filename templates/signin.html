@@ -5,9 +5,11 @@
     <link rel="stylesheet" type="text/css" href="../static/styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">Selva</h1>
+    <div class="banner">
+        <h1 class="dashboard-title">Selva</h1>
         <div class="line"></div>
+    </div>
+    <div class="container">
         <h2 class="medium-header">Sign in</h2>
         {% if error %}
             <div class="input-field has-error">
@@ -35,12 +37,12 @@
                 <button class="login-button" type="submit">Sign in</button>
             </div>
         </form>
-        <br>
+        <br><br>
         <div class="line"></div>
-        <p class="register-text">If this is your first time here, click below to register:</p>
-        <a href="{{ url_for('register_client') }}" class="registration-button">Register as Client</a>
-        <br>
-        <a href="{{ url_for('register_therapist') }}" class="registration-button therapist-form">Register as Therapist</a>
     </div>
+    <p class="register-text">If this is your first time here, click below to register:</p>
+    <a href="{{ url_for('register_client') }}" class="registration-button">Register as Client</a>
+    <br>
+    <a href="{{ url_for('register_therapist') }}" class="registration-button therapist-form">Register as Therapist</a>
 </body>
 </html>

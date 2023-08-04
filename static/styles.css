@@ -16,7 +16,8 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 50px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 
@@ -27,15 +28,7 @@ body {
   text-decoration: underline;
   border: none;
   background-color: transparent;
-  border-radius: 10px;
-  padding: 10px 20px;
-}
-
-.logout-container form button:hover {
-  background-color: #6da471; 
-  color: #86D18E;
-  border-radius: 10px;
-  padding: 10px 20px;
+  margin-bottom: 1rem;
 }
 
 /* Form Styles */
@@ -205,7 +198,7 @@ input-field.has-error .error-column {
   height: 2px;
   margin-top: 0;
   margin-bottom: 1rem;
-  align-self: center;
+  align-self: center !important;
 }
 
 .title {
@@ -252,13 +245,13 @@ a.registration-button.therapist-form {
 }
 
 /* Dashboard Styles */
-.dashboard-banner {
+.banner {
   display: flex;
   flex-direction: column;
   align-items: center;
   background-color: #e1f5e2;
   color: #86D18E;
-  padding: 10px;
+  margin-top: 10px;
   text-align: center;
 }
 
