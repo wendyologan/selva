@@ -11,7 +11,7 @@ from sqlalchemy.orm import relationship
 
 import os
 from flask_migrate import Migrate
-from datetime import datetime
+from datetime import datetime, date
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -96,7 +96,7 @@ class DiaryEntry(db.Model):
     content = db.Column(db.Text, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patients.id'))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    entry_date = db.Column(db.Date, nullable=False, default=datetime.utcnow)  
+    entry_date = db.Column(db.Date, nullable=False, default=db.func.current_date())  
     patient = db.relationship("Patient", back_populates="entries")
 
     def __init__(self, header, content, patient_id):
@@ -334,7 +334,6 @@ def get_diary_entries():
             'header': entry.header,
             'id': entry.id
         })
-    print("diary_entries:", diary_entries)
     return jsonify(diary_entries)
 
 def get_all_therapists():

@@ -6,8 +6,10 @@
     <style>
         .diary-info {
             text-align: left;
+            font-family: Montserrat;
+            margin-left: 1rem;
+            margin-right: 1rem;
         }
-
         p {
             margin-block-start: .2em;
             margin-block-end: .2em;
@@ -18,7 +20,7 @@
 
         .label-column {
             flex: 0 0 150px;
-            font-weight: bold;
+            font-weight: bolder;
         }
         .text-column {
             flex: 1;
@@ -26,10 +28,13 @@
     </style>
 </head>
 <body>
-    <h1 class="title">Selva</h1>
-    <div class="line"></div>
-    <a href="{{ url_for('therapist_dashboard') }}">Back to Therapist's Dashboard</a>
-    <br><br>
+    <div class="banner">
+        <h1 class="dashboard-title">Selva</h1>
+        <div class="line"></div>
+    </div>
+    <a href="{{ url_for('therapist_dashboard') }}" class="back-to-dash-button">Back</a>
+    <br>
+    <br>
     <h2 class="medium-header">Diary Entry #{{ entry.id }}</h2>
     <div class="diary-info">    
         <div class="entry-details">
