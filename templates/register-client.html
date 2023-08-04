@@ -70,9 +70,11 @@
     </script>    
 </head>
 <body>
-  <div class="container">
-    <h1 class="title">Selva</h1>
+  <div class="banner">
+    <h1 class="dashboard-title">Selva</h1>
     <div class="line"></div>
+  </div>
+  <div class="container">
     <h2 class="medium-header">Register as Client</h2>
     <form action="{{ url_for('register_client') }}" method="POST" onsubmit="return validateForm()">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
