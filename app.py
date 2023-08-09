@@ -11,7 +11,7 @@ from sqlalchemy.orm import relationship
 
 import os
 from flask_migrate import Migrate
-from datetime import datetime, date
+from datetime import datetime
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -21,7 +21,7 @@ app = Flask(__name__, instance_path=instance_path)
 
 csrf = CSRFProtect(app)
 
-app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SECRET_KEY'] = 'secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/wendylogan/selva/instance/entries.db'
 
 db = SQLAlchemy(app)
